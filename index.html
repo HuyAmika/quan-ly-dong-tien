@@ -178,8 +178,8 @@ function formPhieu(loai) {
     '<div class="hang"><div><label>Ngày</label><input id="fNgay" type="date" value="' + hn + '" max="' + hn + '"></div>' +
     '<div><label>Cơ sở</label><select id="fCs">' + csOpt + '</select></div></div>' +
     '<label>Hình thức</label><div class="chon" id="fHt"><button data-v="TIỀN MẶT">Tiền mặt</button><button data-v="CHUYỂN KHOẢN">Chuyển khoản</button></div>' +
-    '<div id="fKhungTk"><label>Khách chuyển vào tài khoản nào?</label><select id="fTk"><option value="">— chọn —</option>' +
-    DM.tkNhan.map(function (t) { return '<option value="' + esc(t.ma) + '">' + esc(t.ten) + '</option>'; }).join('') + '</select></div>' +
+    '<div id="fKhungTk"><label id="fNhanTk">Khách chuyển vào tài khoản nào?</label><select id="fTk"><option value="">— chọn —</option>' +
+    DM.tkNhan.map(function (t) { return '<option value="' + esc(t.ma) + '">' + esc(t.ten) + '</option>'; }).join('') + '<option value="KHAC" id="fTkKhac">Tài khoản khác</option></select></div>' +
     '<label id="fNhanNhom">Nhóm chi</label><select id="fNhom"></select>' +
     '<label id="fNhanNd">Nội dung</label><input id="fNd" maxlength="200">' +
     '<label id="fNhanNguoi">Trả cho ai / cửa hàng nào</label><input id="fNguoi" maxlength="100">' +
@@ -198,7 +198,9 @@ function ganForm(sauKhiGui) {
     document.querySelectorAll('#fLoai button').forEach(function (b) { b.classList.toggle('bat', b.dataset.v === MAU.loai); });
     document.querySelectorAll('#fHt button').forEach(function (b) { b.classList.toggle('bat', b.dataset.v === MAU.ht); });
     $('fTieuDe').textContent = laThu ? 'Báo khoản thu' : 'Báo khoản chi';
-    $('fKhungTk').classList.toggle('an', !(laThu && MAU.ht === 'CHUYỂN KHOẢN'));
+    $('fKhungTk').classList.toggle('an', MAU.ht !== 'CHUYỂN KHOẢN');
+    $('fNhanTk').textContent = laThu ? 'Khách chuyển vào tài khoản nào?' : 'Chi từ tài khoản nào?';
+    $('fTkKhac').hidden = laThu; $('fTkKhac').disabled = laThu; if (laThu && $('fTk').value === 'KHAC') $('fTk').value = '';
     $('fKhungHd').classList.toggle('an', !laThu);
     $('fNhanNhom').textContent = laThu ? 'Loại khoản thu' : 'Nhóm chi';
     var ds = laThu ? DM.nhomThu : DM.nhomChi, cu = $('fNhom').value;
@@ -222,7 +224,7 @@ function ganForm(sauKhiGui) {
     var d = { loai: MAU.loai, ht: MAU.ht, ngay: $('fNgay').value, cs: $('fCs').value, tkNhan: $('fTk').value, nhom: $('fNhom').value,
       nd: $('fNd').value.trim(), nguoi: $('fNguoi').value.trim(), tien: so($('fTien').value), hd: $('fHd').value.trim(), anh: MAU.anh };
     var loi = !d.tien ? 'Nhập số tiền.' : d.nd.length < 3 ? 'Ghi rõ nội dung.' : (d.loai === 'CHI' && !d.nhom) ? 'Chọn nhóm chi.' :
-      (d.loai === 'THU' && d.ht === 'CHUYỂN KHOẢN' && !d.tkNhan) ? 'Chọn tài khoản khách chuyển vào.' :
+      (d.ht === 'CHUYỂN KHOẢN' && !d.tkNhan) ? (d.loai === 'THU' ? 'Chọn tài khoản khách chuyển vào.' : 'Chọn tài khoản đã chi tiền.') :
       (d.loai === 'CHI' && d.tien >= DM.nguongChungTu && !d.anh && !TOI.chu) ? 'Khoản chi từ ' + gon(DM.nguongChungTu) + ' phải chụp ảnh hoá đơn.' : '';
     if (loi) { $('fTb').innerHTML = '<div class="loi">' + esc(loi) + '</div>'; return; }
     nutBan($('fGui'));
@@ -504,6 +506,12 @@ function veQuy() {
       var pt = t.mucTieu ? Math.min(100, Math.round(t.soDu / t.mucTieu * 100)) : 0;
       h += '<tr><td>Mục tiêu trước ' + ngayVN(t.han) + '</td><td>' + tien(t.mucTieu) + '</td></tr>' +
         '<tr><td>Tháng này cần góp / đã góp</td><td>' + gon(t.quotaThang || 0) + ' / ' + gon(t.gopThangNay || 0) + '</td></tr></table><div class="thanh"><i style="width:' + pt + '%"></i></div><div class="mo-nhe">' + pt + '% mục tiêu</div><table class="bang">';
+    } else if (t.loai === 'NHẬN TIỀN' && t.theoNganHang) {
+      h += '<tr><td>Số dư theo ngân hàng (SePay)</td><td>lúc ' + esc(String(t.theoNganHang).slice(11, 16) + ' ' + ngayNgan(t.theoNganHang)) + '</td></tr>';
+    } else if (t.loai === 'NHẬN TIỀN' && t.coSoDu) {
+      h += '<tr><td>Từ lúc nhập: khách CK vào (Nhanh.vn)</td><td>+' + gon(t.vao || 0) + '</td></tr>' +
+        '<tr><td>Chi NCC / chi khác đã ghi</td><td>−' + gon(t.ra || 0) + '</td></tr>' +
+        (t.chuyenQuy ? '<tr><td>Anh chuyển đi trả nợ / quỹ</td><td>−' + gon(t.chuyenQuy) + '</td></tr>' : '');
     } else if (t.loai === 'TIỀN MẶT') {
       h += '<tr><td>Từ lúc nhập: anh nhận / anh tự chi</td><td>+' + gon(t.vao || 0) + ' / −' + gon(t.ra || 0) + '</td></tr>';
     } else if (t.loai === 'CHƯA GIẢI NGÂN') {
