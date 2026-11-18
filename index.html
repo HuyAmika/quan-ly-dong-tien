@@ -485,9 +485,13 @@ function veTraCuu() {
 
 /* --- Nợ & quỹ --- */
 function veQuy() {
-  var h = '<div class="the"><h2>Nợ vay & quỹ dự phòng</h2><p class="phu">Số dư = số anh nhập gần nhất + tiền anh xác nhận đã chuyển − kỳ nợ ngân hàng đã trừ. Thỉnh thoảng anh nhìn app ngân hàng và bấm "Cập nhật số dư" cho chính xác.</p></div>';
+  var h = '<div class="the"><h2>Tiền đang có · nợ · quỹ</h2><div class="lon">' + tien(TQ.tienDangCo || 0) + '</div>' +
+    '<p class="phu">= quỹ tiền mặt + 3 tài khoản nhận tiền (ước tính). Số dư = số anh nhập gần nhất + các khoản phát sinh phần mềm biết được. Thỉnh thoảng anh đếm tiền / nhìn app ngân hàng rồi bấm "Cập nhật số dư" cho chính xác.</p></div>';
+  var nhom = '';
   TQ.taiKhoan.forEach(function (t) {
-    h += '<div class="the"><h3>' + esc(t.ten) + '</h3><div class="mo-nhe"><span class="stk" onclick="chep(\'' + esc(t.stk) + '\')">' + esc(t.nganHang + ' ' + t.stk) + ' ⧉</span></div>';
+    var n = t.loai === 'TIỀN MẶT' ? 'Tiền mặt' : t.loai === 'NHẬN TIỀN' ? 'Tài khoản nhận tiền khách' : 'Trả nợ & quỹ dự phòng';
+    if (n !== nhom) { nhom = n; h += '<h3 style="margin:18px 4px 8px">' + n + '</h3>'; }
+    h += '<div class="the"><h3>' + esc(t.ten) + '</h3>' + (t.stk ? '<div class="mo-nhe"><span class="stk" onclick="chep(\'' + esc(t.stk) + '\')">' + esc(t.nganHang + ' ' + t.stk) + ' ⧉</span></div>' : '');
     h += '<table class="bang"><tr><td>Số dư ước tính' + (t.coSoDu ? ' (nhập ' + ngayNgan(t.nhapLuc) + ')' : ' <span class="lech">— chưa nhập</span>') + '</td><td>' + tien(t.soDu) + '</td></tr>';
     if (t.loai === 'TRẢ GÓP' || t.loai === 'TRẢ LÃI') {
       h += '<tr><td>Kỳ tới ' + ngayVN(t.han) + '</td><td>' + tien(t.tienKy) + '</td></tr><tr><td>Dư nợ đang tính lãi</td><td>' + tien(t.duNo) + ' · ' + t.laiSuat + '%/năm</td></tr>' +
@@ -496,18 +500,22 @@ function veQuy() {
       var pt = t.mucTieu ? Math.min(100, Math.round(t.soDu / t.mucTieu * 100)) : 0;
       h += '<tr><td>Mục tiêu trước ' + ngayVN(t.han) + '</td><td>' + tien(t.mucTieu) + '</td></tr>' +
         '<tr><td>Tháng này cần góp / đã góp</td><td>' + gon(t.quotaThang || 0) + ' / ' + gon(t.gopThangNay || 0) + '</td></tr></table><div class="thanh"><i style="width:' + pt + '%"></i></div><div class="mo-nhe">' + pt + '% mục tiêu</div><table class="bang">';
+    } else if (t.loai === 'TIỀN MẶT') {
+      h += '<tr><td>Từ lúc nhập: anh nhận / anh tự chi</td><td>+' + gon(t.vao || 0) + ' / −' + gon(t.ra || 0) + '</td></tr>';
     } else if (t.loai === 'CHƯA GIẢI NGÂN') {
       h += '<tr><td>Dự kiến vay</td><td>' + tien(t.duNo) + ' · ' + t.laiSuat + '%/năm</td></tr><tr><td>Lãi dự kiến/tháng</td><td>~' + gon(t.duNo * t.laiSuat / 100 / 12) + '</td></tr>';
     }
     h += '</table>';
     if (t.chiTiet) h += '<p class="phu" style="margin-top:8px">' + esc(t.chiTiet) + '</p>';
-    if (t.loai !== 'CÁ NHÂN' && t.loai !== 'CHƯA GIẢI NGÂN') h += '<div class="nut-hang"><button class="nho b-phu" onclick="nhapSoDu(\'' + t.ma + '\', this)">Cập nhật số dư</button><button class="nho b-phu" onclick="chuyenThem(\'' + t.ma + '\', this)">Ghi chuyển thêm</button></div>';
+    var coChuyen = t.loai === 'TRẢ GÓP' || t.loai === 'TRẢ LÃI' || t.loai === 'QUỸ';
+    h += '<div class="nut-hang"><button class="nho b-phu" onclick="nhapSoDu(\'' + t.ma + '\', this, \'' + t.loai + '\')">Cập nhật số dư</button>' +
+      (coChuyen ? '<button class="nho b-phu" onclick="chuyenThem(\'' + t.ma + '\', this)">Ghi chuyển thêm</button>' : '') + '</div>';
     h += '</div>';
   });
   $('man').innerHTML = h;
 }
-function nhapSoDu(ma, btn) {
-  var s = prompt('Số dư hiện tại trên app ngân hàng của tài khoản này là bao nhiêu?'); if (s === null || s === '') return;
+function nhapSoDu(ma, btn, loai) {
+  var s = prompt(loai === 'TIỀN MẶT' ? 'Anh đếm được bao nhiêu tiền mặt đang giữ?' : 'Số dư hiện tại trên app ngân hàng của tài khoản này là bao nhiêu?'); if (s === null || s === '') return;
   nutBan(btn, '…');
   goi('capNhatSoDu', TOI.ma, PIN, ma, so(s)).then(function () { bao('Đã lưu số dư'); taiLaiIm(); }).catch(function (e) { nutXong(btn); bao(e.message); });
 }
@@ -519,7 +527,7 @@ function chuyenThem(ma, btn) {
 
 /* --- Anh tự ghi --- */
 function veGhi() {
-  $('man').innerHTML = '<p class="phu">Anh ghi thay khi nhân viên nghỉ. Khoản anh ghi được duyệt luôn.</p>' + formPhieu('CHI');
+  $('man').innerHTML = '<p class="phu">Anh ghi thay khi nhân viên nghỉ. Khoản anh ghi được duyệt luôn. Khoản <b>tiền mặt</b> anh ghi được tính thẳng vào <b>quỹ tiền mặt của anh</b> (cộng khi thu, trừ khi chi), không tính vào tiền mặt cơ sở phải nộp.</p>' + formPhieu('CHI');
   ganForm(function () { taiLaiIm(); });
 }
 
