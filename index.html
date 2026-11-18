@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dòng tiền">
+<meta name="theme-color" content="#1f3864">
+<title>Dòng tiền AMIKA</title>
+<style>
+  :root { --xanh:#1f3864; --xanh2:#2e5597; --nen:#f2f5fa; --xl:#1e8e3e; --cam:#e8710a; --do:#c62828; --chu:#1d2433; --mo:#667085; --vien:#d5dce8; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; background:var(--nen); color:var(--chu); font-size:16px; }
+  header { background:var(--xanh); color:#fff; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:5; }
+  header b { font-size:17px; }
+  header .phai { display:flex; gap:14px; align-items:center; }
+  header a { color:#c9d8f5; font-size:14px; text-decoration:none; cursor:pointer; }
+  main { max-width:560px; margin:0 auto; padding:14px 14px 90px; }
+  .the { background:#fff; border-radius:14px; padding:16px; box-shadow:0 1px 3px rgba(16,24,40,.08); margin-bottom:14px; }
+  h2 { margin:0 0 8px; font-size:19px; color:var(--xanh); }
+  h3 { margin:0 0 10px; font-size:16px; color:var(--xanh); }
+  .phu { color:var(--mo); font-size:13.5px; line-height:1.5; margin:0 0 10px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 5px; }
+  input, select, textarea { width:100%; padding:12px; font-size:16px; border:1px solid #cfd6e3; border-radius:10px; background:#fff; color:var(--chu); font-family:inherit; }
+  textarea { min-height:64px; resize:vertical; }
+  .hang { display:flex; gap:10px; } .hang > * { flex:1; min-width:0; }
+  button { padding:13px; font-size:16px; font-weight:700; border:0; border-radius:12px; background:var(--xanh2); color:#fff; cursor:pointer; font-family:inherit; }
+  button:disabled { opacity:.5; }
+  .rong { width:100%; margin-top:14px; }
+  .nho { padding:8px 12px; font-size:14px; border-radius:9px; }
+  .b-phu { background:#e6ecf5; color:var(--xanh); }
+  .b-xl { background:var(--xl); } .b-do { background:var(--do); } .b-cam { background:var(--cam); }
+  .an { display:none !important; }
+  .loi { background:#fdecea; color:var(--do); padding:10px 12px; border-radius:10px; font-size:14px; margin-top:10px; line-height:1.45; }
+  .tot { background:#e7f6ec; color:var(--xl); padding:10px 12px; border-radius:10px; font-size:14px; margin-top:10px; line-height:1.45; }
+  .ten-nv { display:block; width:100%; text-align:left; background:#fff; color:var(--chu); border:2px solid var(--vien); margin-bottom:10px; font-weight:600; }
+  .ten-nv small { color:var(--mo); font-weight:400; margin-left:6px; }
+  .chon { display:flex; gap:8px; } .chon button { flex:1; background:#fff; color:var(--chu); border:2px solid var(--vien); font-weight:600; padding:11px 6px; font-size:15px; }
+  .chon button.bat { border-color:var(--xanh2); background:#eaf1fd; color:var(--xanh); }
+  .chon.thu button.bat { border-color:var(--xl); background:#e7f6ec; color:var(--xl); }
+  .chon.chi button.bat { border-color:var(--cam); background:#fff3e6; color:#a24d00; }
+  .tien-to { font-size:22px; font-weight:800; }
+  /* cảnh báo */
+  .cb-do { background:#c62828; color:#fff; border-radius:14px; padding:12px 14px; margin-bottom:12px; }
+  .cb-do h3 { color:#fff; margin:0 0 6px; font-size:16px; }
+  .cb-muc { background:rgba(255,255,255,.12); border-radius:10px; padding:10px; margin-top:8px; font-size:14px; line-height:1.45; }
+  .cb-muc b { display:block; font-size:15px; }
+  .cb-muc .hq { margin-top:4px; font-size:13px; opacity:.9; font-style:italic; }
+  .cb-vang { background:#fff7e0; border-left:5px solid #f0a020; border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:14px; }
+  .cb-vang summary { font-weight:700; cursor:pointer; color:#7a4b00; }
+  .cb-vang .m { padding:8px 0 0; border-top:1px dashed #f0d090; margin-top:8px; line-height:1.45; }
+  /* danh sách */
+  .dong { border-top:1px solid #eef1f6; padding:11px 0; }
+  .dong:first-child { border-top:0; padding-top:0; }
+  .dong .tren { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+  .dong .nd { font-weight:600; line-height:1.35; }
+  .dong .tien { font-weight:800; white-space:nowrap; }
+  .dong .duoi { color:var(--mo); font-size:13px; margin-top:3px; line-height:1.45; }
+  .chip { display:inline-block; font-size:12px; font-weight:700; padding:3px 8px; border-radius:20px; white-space:nowrap; }
+  .c-cho { background:#fff3bf; color:#7a5b00; } .c-duyet { background:#e7f6ec; color:var(--xl); }
+  .c-kt { background:#fdecea; color:var(--do); } .c-tc { background:#eceff3; color:#555; } .c-huy { background:#eceff3; color:#888; }
+  .thu { color:var(--xl); } .chi { color:#b45309; }
+  .ghi-do { background:#fdecea; color:#9b1c1c; border-radius:8px; padding:7px 9px; font-size:13px; margin-top:6px; line-height:1.45; }
+  .ghi-xanh { background:#eef4ff; color:#1f3864; border-radius:8px; padding:7px 9px; font-size:13px; margin-top:6px; line-height:1.45; }
+  .nut-hang { display:flex; gap:8px; margin-top:9px; flex-wrap:wrap; } .nut-hang button { flex:1; }
+  /* đề xuất */
+  .dx { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:12px 0; border-top:1px solid #eef1f6; }
+  .dx:first-of-type { border-top:0; }
+  .dx .so { font-size:20px; font-weight:800; color:var(--xanh); white-space:nowrap; }
+  .dx.gap .so { color:var(--do); }
+  .stk { font-family:ui-monospace,Menlo,Consolas,monospace; font-size:13px; color:var(--mo); cursor:pointer; text-decoration:underline dotted; }
+  .lon { font-size:28px; font-weight:800; color:var(--xanh); }
+  .bang { width:100%; border-collapse:collapse; font-size:13.5px; }
+  .bang td { padding:5px 0; border-top:1px solid #f0f2f6; } .bang td:last-child { text-align:right; font-weight:600; }
+  .lech { color:var(--do); font-weight:800; } .khop { color:var(--xl); font-weight:700; }
+  .thanh { height:9px; background:#e3e8f0; border-radius:9px; overflow:hidden; margin:6px 0; }
+  .thanh i { display:block; height:100%; background:var(--xl); }
+  /* tab dưới */
+  nav { position:fixed; left:0; right:0; bottom:0; background:#fff; border-top:1px solid var(--vien); display:flex; z-index:6; padding-bottom:env(safe-area-inset-bottom); }
+  nav button { flex:1; background:none; color:var(--mo); font-size:11.5px; font-weight:600; padding:8px 2px 9px; border-radius:0; position:relative; }
+  nav button span { display:block; font-size:20px; line-height:1.2; }
+  nav button.bat { color:var(--xanh2); }
+  nav i { position:absolute; top:4px; left:calc(50% + 6px); background:var(--do); color:#fff; font-style:normal; font-size:11px; padding:1px 6px; border-radius:10px; }
+  .bao-do { background:var(--do); color:#fff; border-radius:12px; padding:12px 14px; font-weight:700; margin-bottom:12px; }
+  .cho-tai { text-align:center; color:var(--mo); padding:30px 0; }
+  .anh-xem { max-width:100%; border-radius:10px; margin-top:8px; }
+  .toast { position:fixed; left:50%; bottom:86px; transform:translateX(-50%); background:#1d2433; color:#fff; padding:10px 16px; border-radius:20px; font-size:14px; z-index:20; max-width:90%; }
+  .mo-nhe { color:var(--mo); font-size:13px; }
+</style>
+</head>
+<body>
+<header><b id="tieuDe">💰 Dòng tiền AMIKA</b><div class="phai"><a id="nutLamMoi" class="an">↻ Cập nhật</a><a id="nutThoat" class="an">Thoát</a></div></header>
+<main id="man"><div class="cho-tai">Đang tải…</div></main>
+<nav id="thanhTab" class="an"></nav>
+
+<script>
+/* ===== Kết nối máy chủ (Apps Script). ?api=... để chạy thử trên máy ===== */
+var API = (new URLSearchParams(location.search).get('api')) || 'https://script.google.com/macros/s/AKfycbzzpasjHq6yiJn5KJB88vgL-C5HMwq5mMcEj0MY9w46-SErAvDH5SqhCfF4pZ15btCSNg/exec';
+var TOI = null, PIN = '', DM = null, TQ = null, TAB_HIEN = 'tongquan';
+
+function goi(fn) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return fetch(API, { method: 'POST', redirect: 'follow', credentials: 'omit', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ fn: fn, args: args }) })
+    .then(function (r) { return r.json(); })
+    .then(function (j) { if (!j.ok) throw new Error(j.loi || 'Lỗi máy chủ'); return j.data; });
+}
+function luu(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} }
+function doc(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function tien(n) { n = Math.round(n || 0); return (n < 0 ? '-' : '') + String(Math.abs(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.') + 'đ'; }
+function gon(n) { var a = Math.abs(n || 0), s = n < 0 ? '-' : ''; if (a >= 1e9) return s + (a / 1e9).toFixed(2).replace(/\.?0+$/, '').replace('.', ',') + ' tỷ'; if (a >= 1e6) return s + (a / 1e6).toFixed(1).replace(/\.0$/, '').replace('.', ',') + 'tr'; if (a >= 1e3) return s + Math.round(a / 1e3) + 'k'; return s + a + 'đ'; }
+function ngayVN(iso) { var p = String(iso || '').slice(0, 10).split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : iso; }
+function ngayNgan(iso) { var p = String(iso || '').slice(0, 10).split('-'); return p.length === 3 ? p[2] + '/' + p[1] : iso; }
+function so(s) { return parseInt(String(s || '').replace(/\D/g, ''), 10) || 0; }
+function bao(msg) { var t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600); }
+function chip(tt) { var c = { 'CHỜ DUYỆT': 'c-cho', 'ĐÃ DUYỆT': 'c-duyet', 'CẦN KIỂM TRA': 'c-kt', 'TỪ CHỐI': 'c-tc', 'ĐÃ HUỶ': 'c-huy' }[tt] || 'c-cho'; return '<span class="chip ' + c + '">' + esc(tt) + '</span>'; }
+function dinhDangTien(el) { el.addEventListener('input', function () { var n = so(el.value); el.value = n ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : ''; }); }
+function chep(s) { try { navigator.clipboard.writeText(String(s).replace(/\D/g, '')); bao('Đã chép số tài khoản ' + s); } catch (e) { bao(s); } }
+function nutBan(btn, chu) { btn.disabled = true; btn.dataset.cu = btn.textContent; btn.textContent = chu || 'Đang gửi…'; }
+function nutXong(btn) { btn.disabled = false; if (btn.dataset.cu) btn.textContent = btn.dataset.cu; }
+
+/* ===== Đăng nhập ===== */
+function moDau() {
+  var ma = doc('dt_ma'), pin = doc('dt_pin');
+  if (ma && pin) { dangNhap(ma, pin, true); return; }
+  manChonTen();
+}
+function manChonTen() {
+  $('nutThoat').classList.add('an'); $('nutLamMoi').classList.add('an'); $('thanhTab').classList.add('an');
+  $('man').innerHTML = '<div class="cho-tai">Đang tải danh sách…</div>';
+  goi('dsDangNhap').then(function (ds) {
+    var h = '<div class="the"><h2>Chào bạn 👋</h2><p class="phu">Chọn tên của bạn để báo khoản thu, khoản chi trong ngày.</p>';
+    ds.forEach(function (n) { h += '<button class="ten-nv" data-ma="' + esc(n.ma) + '" data-ten="' + esc(n.ten) + '">' + esc(n.ten) + '<small>' + (n.chu ? 'Giám đốc' : esc(n.cs)) + '</small></button>'; });
+    h += '</div>';
+    $('man').innerHTML = h;
+    document.querySelectorAll('.ten-nv').forEach(function (b) { b.onclick = function () { manPin(b.dataset.ma, b.dataset.ten); }; });
+  }).catch(function (e) { $('man').innerHTML = '<div class="the"><div class="loi">Không kết nối được máy chủ: ' + esc(e.message) + '</div><button class="rong" onclick="manChonTen()">Thử lại</button></div>'; });
+}
+function manPin(ma, ten) {
+  $('man').innerHTML = '<div class="the"><h2>' + esc(ten) + '</h2><label>Mã PIN</label><input id="oPin" type="password" inputmode="numeric" autocomplete="off" maxlength="8">' +
+    '<button id="nutVao" class="rong">Vào</button><button class="rong b-phu" onclick="manChonTen()">← Chọn người khác</button><div id="tbPin"></div></div>';
+  $('oPin').focus();
+  var vao = function () { dangNhap(ma, $('oPin').value.trim(), false); };
+  $('nutVao').onclick = vao;
+  $('oPin').onkeydown = function (e) { if (e.key === 'Enter') vao(); };
+}
+function dangNhap(ma, pin, tuDong) {
+  if (!tuDong) nutBan($('nutVao'), 'Đang vào…');
+  goi('dangNhap', ma, pin).then(function (d) {
+    TOI = d; PIN = pin; DM = d.danhMuc;
+    luu('dt_ma', ma); luu('dt_pin', pin);
+    $('nutThoat').classList.remove('an');
+    if (d.chu) { $('nutLamMoi').classList.remove('an'); taiTongQuan(); }
+    else manNhanVien();
+  }).catch(function (e) {
+    if (tuDong) { luu('dt_pin', null); manChonTen(); return; }
+    nutXong($('nutVao')); $('tbPin').innerHTML = '<div class="loi">' + esc(e.message) + '</div>';
+  });
+}
+$('nutThoat').onclick = function () { luu('dt_ma', null); luu('dt_pin', null); TOI = null; manChonTen(); };
+$('nutLamMoi').onclick = function () {
+  $('nutLamMoi').textContent = '↻ Đang lấy số…';
+  goi('lamMoi', TOI.ma, PIN).then(function (d) { TQ = d; $('nutLamMoi').textContent = '↻ Cập nhật'; veChu(); bao('Đã cập nhật số liệu mới nhất'); })
+    .catch(function (e) { $('nutLamMoi').textContent = '↻ Cập nhật'; bao(e.message); });
+};
+
+/* ===== Mẫu nhập khoản thu / chi (dùng chung NV và anh) ===== */
+var MAU = { loai: 'CHI', ht: 'TIỀN MẶT', anh: '' };
+function formPhieu(loai) {
+  MAU = { loai: loai || 'CHI', ht: 'TIỀN MẶT', anh: '' };
+  var hn = TOI.homNay;
+  var csOpt = DM.coSo.map(function (c) { return '<option>' + esc(c) + '</option>'; }).join('');
+  var h = '<div class="the" id="khungForm"><h2 id="fTieuDe"></h2>' +
+    '<div class="chon" id="fLoai"><button data-v="THU">💵 Khoản THU</button><button data-v="CHI">🧾 Khoản CHI</button></div>' +
+    '<div class="hang"><div><label>Ngày</label><input id="fNgay" type="date" value="' + hn + '" max="' + hn + '"></div>' +
+    '<div><label>Cơ sở</label><select id="fCs">' + csOpt + '</select></div></div>' +
+    '<label>Hình thức</label><div class="chon" id="fHt"><button data-v="TIỀN MẶT">Tiền mặt</button><button data-v="CHUYỂN KHOẢN">Chuyển khoản</button></div>' +
+    '<div id="fKhungTk"><label>Khách chuyển vào tài khoản nào?</label><select id="fTk"><option value="">— chọn —</option>' +
+    DM.tkNhan.map(function (t) { return '<option value="' + esc(t.ma) + '">' + esc(t.ten) + '</option>'; }).join('') + '</select></div>' +
+    '<label id="fNhanNhom">Nhóm chi</label><select id="fNhom"></select>' +
+    '<label id="fNhanNd">Nội dung</label><input id="fNd" maxlength="200">' +
+    '<label id="fNhanNguoi">Trả cho ai / cửa hàng nào</label><input id="fNguoi" maxlength="100">' +
+    '<label>Số tiền</label><input id="fTien" inputmode="numeric" class="tien-to" placeholder="0">' +
+    '<div id="fKhungHd"><label>Số hoá đơn Nhanh.vn (nếu có)</label><input id="fHd" maxlength="40"></div>' +
+    '<div id="fKhungAnh"><label id="fNhanAnh">Ảnh hoá đơn / chứng từ</label><input id="fAnh" type="file" accept="image/*" capture="environment"><img id="fXemAnh" class="anh-xem an"></div>' +
+    '<button id="fGui" class="rong b-xl">Gửi</button><div id="fTb"></div></div>';
+  return h;
+}
+function ganForm(sauKhiGui) {
+  dinhDangTien($('fTien'));
+  if (TOI.cs && DM.coSo.indexOf(TOI.cs) >= 0) $('fCs').value = TOI.cs;
+  var ve = function () {
+    var laThu = MAU.loai === 'THU';
+    $('fLoai').className = 'chon ' + (laThu ? 'thu' : 'chi');
+    document.querySelectorAll('#fLoai button').forEach(function (b) { b.classList.toggle('bat', b.dataset.v === MAU.loai); });
+    document.querySelectorAll('#fHt button').forEach(function (b) { b.classList.toggle('bat', b.dataset.v === MAU.ht); });
+    $('fTieuDe').textContent = laThu ? 'Báo khoản thu' : 'Báo khoản chi';
+    $('fKhungTk').classList.toggle('an', !(laThu && MAU.ht === 'CHUYỂN KHOẢN'));
+    $('fKhungHd').classList.toggle('an', !laThu);
+    $('fNhanNhom').textContent = laThu ? 'Loại khoản thu' : 'Nhóm chi';
+    var ds = laThu ? DM.nhomThu : DM.nhomChi, cu = $('fNhom').value;
+    $('fNhom').innerHTML = (laThu ? '' : '<option value="">— chọn nhóm —</option>') + ds.map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
+    if (ds.indexOf(cu) >= 0) $('fNhom').value = cu;
+    $('fNhanNd').textContent = laThu ? 'Thu của ai, việc gì' : 'Chi vào việc gì (ghi rõ món, số lượng)';
+    $('fNd').placeholder = laThu ? 'vd: Anh Hoè VF8 dán phim 3M' : 'vd: Mua 2 lọc dầu i10';
+    $('fNhanNguoi').textContent = laThu ? 'Tên khách / SĐT' : 'Trả cho ai / cửa hàng nào';
+    var t = so($('fTien').value);
+    $('fNhanAnh').textContent = laThu ? 'Ảnh (nếu có)' : (t >= DM.nguongChungTu ? 'Ảnh hoá đơn / chứng từ (BẮT BUỘC từ ' + gon(DM.nguongChungTu) + ')' : 'Ảnh hoá đơn / chứng từ (nên có)');
+  };
+  document.querySelectorAll('#fLoai button').forEach(function (b) { b.onclick = function () { MAU.loai = b.dataset.v; ve(); }; });
+  document.querySelectorAll('#fHt button').forEach(function (b) { b.onclick = function () { MAU.ht = b.dataset.v; ve(); }; });
+  $('fTien').addEventListener('input', ve);
+  $('fAnh').onchange = function () {
+    var f = $('fAnh').files[0]; if (!f) return;
+    nenAnh(f, function (d) { MAU.anh = d; $('fXemAnh').src = d; $('fXemAnh').classList.remove('an'); });
+  };
+  ve();
+  $('fGui').onclick = function () {
+    var d = { loai: MAU.loai, ht: MAU.ht, ngay: $('fNgay').value, cs: $('fCs').value, tkNhan: $('fTk').value, nhom: $('fNhom').value,
+      nd: $('fNd').value.trim(), nguoi: $('fNguoi').value.trim(), tien: so($('fTien').value), hd: $('fHd').value.trim(), anh: MAU.anh };
+    var loi = !d.tien ? 'Nhập số tiền.' : d.nd.length < 3 ? 'Ghi rõ nội dung.' : (d.loai === 'CHI' && !d.nhom) ? 'Chọn nhóm chi.' :
+      (d.loai === 'THU' && d.ht === 'CHUYỂN KHOẢN' && !d.tkNhan) ? 'Chọn tài khoản khách chuyển vào.' :
+      (d.loai === 'CHI' && d.tien >= DM.nguongChungTu && !d.anh && !TOI.chu) ? 'Khoản chi từ ' + gon(DM.nguongChungTu) + ' phải chụp ảnh hoá đơn.' : '';
+    if (loi) { $('fTb').innerHTML = '<div class="loi">' + esc(loi) + '</div>'; return; }
+    nutBan($('fGui'));
+    goi('guiPhieu', TOI.ma, PIN, d).then(function (kq) {
+      nutXong($('fGui'));
+      var cb = (kq.canhBao || []).length ? '<div class="ghi-do">⚠ ' + kq.canhBao.map(esc).join('<br>⚠ ') + '</div>' : '';
+      $('fTb').innerHTML = '<div class="tot">✅ Đã gửi ' + (d.loai === 'THU' ? 'khoản thu ' : 'khoản chi ') + tien(d.tien) + '</div>' + cb;
+      $('fNd').value = ''; $('fNguoi').value = ''; $('fTien').value = ''; $('fHd').value = ''; $('fAnh').value = ''; MAU.anh = ''; $('fXemAnh').classList.add('an');
+      if (sauKhiGui) sauKhiGui(kq);
+    }).catch(function (e) { nutXong($('fGui')); $('fTb').innerHTML = '<div class="loi">' + esc(e.message) + '</div>'; });
+  };
+}
+function nenAnh(file, xong) {
+  var r = new FileReader();
+  r.onload = function () {
+    var img = new Image();
+    img.onload = function () {
+      var m = 1280, w = img.width, h = img.height, k = Math.min(1, m / Math.max(w, h));
+      var c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+      xong(c.toDataURL('image/jpeg', 0.72));
+    };
+    img.src = r.result;
+  };
+  r.readAsDataURL(file);
+}
+
+/* ===== Màn nhân viên ===== */
+function manNhanVien() {
+  $('tieuDe').textContent = '💰 ' + TOI.ten;
+  var kt = TOI.phieu.filter(function (p) { return p.tt === 'CẦN KIỂM TRA'; });
+  var h = '';
+  if (kt.length) h += '<div class="bao-do">🔴 Anh Huy yêu cầu kiểm tra lại ' + kt.length + ' khoản — xem bên dưới và giải trình.</div>';
+  h += formPhieu('CHI');
+  h += '<div class="the"><h3>Khoản tôi đã báo (45 ngày)</h3><div id="dsCuaToi"></div></div>';
+  $('man').innerHTML = h;
+  ganForm(function (kq) { TOI.phieu = kq.phieu; veCuaToi(); });
+  veCuaToi();
+}
+function veCuaToi() {
+  var ds = TOI.phieu;
+  if (!ds.length) { $('dsCuaToi').innerHTML = '<p class="phu">Chưa có khoản nào.</p>'; return; }
+  ds.sort(function (a, b) { var u = function (p) { return p.tt === 'CẦN KIỂM TRA' ? 0 : p.tt === 'CHỜ DUYỆT' ? 1 : 2; }; return u(a) - u(b) || (a.tao < b.tao ? 1 : -1); });
+  $('dsCuaToi').innerHTML = ds.map(function (p) {
+    var h = '<div class="dong"><div class="tren"><div class="nd"><span class="' + (p.loai === 'THU' ? 'thu' : 'chi') + '">' + (p.loai === 'THU' ? '＋' : '－') + '</span> ' + esc(p.nd) + '</div>' +
+      '<div class="tien ' + (p.loai === 'THU' ? 'thu' : 'chi') + '">' + tien(p.tien) + '</div></div>' +
+      '<div class="duoi">' + ngayNgan(p.ngay) + ' · ' + esc(p.cs) + ' · ' + esc(p.ht.toLowerCase()) + (p.tkNhan ? ' → ' + esc(p.tkNhan) : '') + ' · ' + chip(p.tt) + '</div>';
+    if (p.ds && p.loai === 'THU') h += '<div class="' + (p.tt === 'CẦN KIỂM TRA' ? 'ghi-do' : 'ghi-xanh') + '">' + esc(p.ds) + '</div>';
+    if (p.gcChu) h += '<div class="ghi-do">Anh Huy: ' + esc(p.gcChu) + '</div>';
+    if (p.gTrinh) h += '<div class="ghi-xanh">Bạn đã giải trình: ' + esc(p.gTrinh) + '</div>';
+    if (p.tt === 'CẦN KIỂM TRA') h += '<div class="nut-hang"><button class="nho b-cam" onclick="moGiaiTrinh(\'' + p.ma + '\')">✍ Giải trình / sửa số tiền</button></div><div id="gt_' + p.ma + '"></div>';
+    else if (p.tt === 'CHỜ DUYỆT') h += '<div class="nut-hang"><button class="nho b-phu" onclick="huyPhieu(\'' + p.ma + '\', this)">Huỷ khoản này</button></div>';
+    return h + '</div>';
+  }).join('');
+}
+function moGiaiTrinh(ma) {
+  $('gt_' + ma).innerHTML = '<label>Lý do</label><textarea id="gtNd" placeholder="vd: khách còn nợ, hẹn mai chuyển · khách chuyển nhầm TK Khoa · em nhập sai số"></textarea>' +
+    '<label>Số tiền đúng (bỏ trống nếu không đổi)</label><input id="gtTien" inputmode="numeric"><button class="rong" id="gtGui">Gửi giải trình</button><div id="gtTb"></div>';
+  dinhDangTien($('gtTien'));
+  $('gtGui').onclick = function () {
+    nutBan($('gtGui'));
+    goi('giaiTrinh', TOI.ma, PIN, ma, $('gtNd').value, so($('gtTien').value)).then(function (kq) { TOI.phieu = kq.phieu; veCuaToi(); bao('Đã gửi giải trình'); })
+      .catch(function (e) { nutXong($('gtGui')); $('gtTb').innerHTML = '<div class="loi">' + esc(e.message) + '</div>'; });
+  };
+}
+function huyPhieu(ma, btn) {
+  if (!confirm('Huỷ khoản này?')) return;
+  nutBan(btn, 'Đang huỷ…');
+  goi('huyPhieu', TOI.ma, PIN, ma).then(function (kq) { TOI.phieu = kq.phieu; veCuaToi(); }).catch(function (e) { nutXong(btn); bao(e.message); });
+}
+
+/* ===== Màn của anh ===== */
+var TABS = [['tongquan', '🏠', 'Tổng quan'], ['duyet', '✅', 'Duyệt'], ['doisoat', '⚖️', 'Đối soát'], ['tracuu', '🔍', 'Tra cứu'], ['quy', '🏦', 'Nợ & quỹ'], ['ghi', '➕', 'Ghi']];
+function taiTongQuan() {
+  $('tieuDe').textContent = '💰 Dòng tiền AMIKA';
+  $('man').innerHTML = '<div class="cho-tai">Đang tính toán…</div>';
+  goi('tongQuan', TOI.ma, PIN).then(function (d) { TQ = d; veChu(); }).catch(function (e) { $('man').innerHTML = '<div class="the"><div class="loi">' + esc(e.message) + '</div></div>'; });
+}
+function veTab() {
+  var n = (TQ.choDuyet || []).length;
+  $('thanhTab').innerHTML = TABS.map(function (t) {
+    return '<button data-t="' + t[0] + '" class="' + (TAB_HIEN === t[0] ? 'bat' : '') + '"><span>' + t[1] + '</span>' + t[2] + (t[0] === 'duyet' && n ? '<i>' + n + '</i>' : '') + '</button>';
+  }).join('');
+  $('thanhTab').classList.remove('an');
+  document.querySelectorAll('#thanhTab button').forEach(function (b) { b.onclick = function () { TAB_HIEN = b.dataset.t; veChu(); scrollTo(0, 0); }; });
+}
+function veChu() {
+  veTab();
+  var f = { tongquan: veTongQuan, duyet: veDuyet, doisoat: veDoiSoat, tracuu: veTraCuu, quy: veQuy, ghi: veGhi }[TAB_HIEN];
+  f();
+}
+function khungCanhBao(chiDo) {
+  var cb = TQ.canhBao || [], d = cb.filter(function (c) { return c.muc === 'ĐỎ'; }), v = cb.filter(function (c) { return c.muc !== 'ĐỎ'; });
+  var h = '';
+  if (d.length) {
+    h += '<div class="cb-do"><h3>🔴 ' + d.length + ' CẢNH BÁO ĐỎ — xử lý ngay</h3>';
+    d.forEach(function (c) { h += '<div class="cb-muc"><b>' + esc(c.tieuDe) + '</b>' + esc(c.chiTiet) + (c.hauQua ? '<div class="hq">Rủi ro: ' + esc(c.hauQua) + '</div>' : '') + '</div>'; });
+    h += '</div>';
+  } else h += '<div class="tot" style="margin:0 0 12px">🟢 Không có cảnh báo đỏ. Anh đang giữ kỷ luật tài chính tốt.</div>';
+  if (!chiDo && v.length) {
+    h += '<details class="cb-vang"><summary>🟡 ' + v.length + ' lưu ý cần theo dõi</summary>';
+    v.forEach(function (c) { h += '<div class="m"><b>' + esc(c.tieuDe) + '</b><br>' + esc(c.chiTiet) + '</div>'; });
+    h += '</details>';
+  }
+  return h;
+}
+function veTongQuan() {
+  var dx = TQ.deXuat, h = '';
+  if (TQ.cheDo === 'THỬ') h += '<div class="cb-vang"><b>CHẾ ĐỘ THỬ</b> — số liệu mẫu, chưa phải tiền thật.</div>';
+  h += khungCanhBao(false);
+  h += '<div class="the"><h2>Hôm nay nên chuyển</h2><div class="lon">' + tien(dx.tong) + '</div>' +
+    '<p class="phu">Thực nhận ' + ngayVN(dx.homQua) + ': <b>' + tien(dx.thucNhan) + '</b> (chuyển khoản ' + gon(dx.ck) + ' + tiền mặt anh đã đếm ' + gon(dx.tm) + ')' +
+    (dx.daDemDu ? '' : ' — <b style="color:#c62828">còn tiền mặt chưa đếm</b>') + '. Trích tối đa ' + gon(dx.tran) + ', giữ lại ' + gon(dx.giuLai) + ' để chạy công ty (lương, nhập hàng).</p>';
+  if (!dx.daLuu.length) h += '<p class="phu">Không có khoản nào cần chuyển hôm nay.</p>';
+  dx.daLuu.forEach(function (p) {
+    var d = dx.ds.filter(function (x) { return x.ma === p.maTk; })[0] || {};
+    var tk = (TQ.taiKhoan || []).filter(function (t) { return t.ma === p.maTk; })[0] || {};
+    h += '<div class="dx' + (d.gap ? ' gap' : '') + '"><div><b>' + esc(p.ten) + '</b><br><span class="stk" onclick="chep(\'' + esc(tk.stk) + '\')">' + esc(tk.nganHang + ' ' + tk.stk) + ' ⧉</span>' +
+      '<div class="mo-nhe">' + esc(p.lyDo) + '</div></div><div style="text-align:right"><div class="so">' + tien(p.dx || p.da) + '</div>';
+    if (p.tt === 'ĐỀ XUẤT') h += '<div class="nut-hang" style="justify-content:flex-end"><button class="nho b-xl" onclick="daChuyen(\'' + p.ma + '\',' + p.dx + ', this)">Đã chuyển</button><button class="nho b-phu" onclick="boQua(\'' + p.ma + '\', this)">Bỏ qua</button></div>';
+    else h += '<span class="chip ' + (p.tt === 'ĐÃ CHUYỂN' ? 'c-duyet' : 'c-tc') + '">' + esc(p.tt) + (p.tt === 'ĐÃ CHUYỂN' && p.da !== p.dx ? ' ' + gon(p.da) : '') + '</span>';
+    h += '</div></div>';
+  });
+  if (dx.doi && dx.doi.length) h += '<p class="phu" style="margin-top:10px">Dời sang ngày sau vì hôm qua thu chưa đủ: ' + dx.doi.map(function (x) { return esc(x.ten) + ' ' + gon(x.thieu); }).join(', ') + '.</p>';
+  h += '<p class="phu" style="margin-top:10px">📌 Phần mềm chỉ đề xuất, không chuyển tiền. Anh chuyển trên app ngân hàng rồi bấm "Đã chuyển".</p></div>';
+  var hq = TQ.doiSoat[1] || TQ.doiSoat[0];
+  h += '<div class="the"><h3>Nghĩa vụ tháng này</h3><table class="bang"><tr><td>Trả nợ ngân hàng (gốc + lãi các kỳ tới)</td><td>' + tien(TQ.nghiaVuThang) + '</td></tr>' +
+    '<tr><td>Góp quỹ Tết + du lịch tháng này</td><td>' + tien(TQ.quyThang) + '</td></tr>' +
+    '<tr><td><b>Cộng</b></td><td>' + tien(TQ.nghiaVuThang + TQ.quyThang) + '</td></tr></table>' +
+    '<p class="phu" style="margin-top:8px">Cập nhật số liệu lần cuối: ' + esc(TQ.capNhat || 'chưa có') + '</p></div>';
+  $('man').innerHTML = h;
+}
+function daChuyen(ma, goiY, btn) {
+  var s = prompt('Anh đã chuyển bao nhiêu? (để nguyên nếu đúng số đề xuất)', String(goiY).replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+  if (s === null) return;
+  nutBan(btn, '…');
+  goi('xacNhanChuyen', TOI.ma, PIN, ma, so(s)).then(function () { bao('Đã ghi nhận'); taiLaiIm(); }).catch(function (e) { nutXong(btn); bao(e.message); });
+}
+function boQua(ma, btn) {
+  if (!confirm('Bỏ qua đề xuất này hôm nay? Phần mềm sẽ dồn số tiền sang các ngày còn lại.')) return;
+  nutBan(btn, '…');
+  goi('xacNhanChuyen', TOI.ma, PIN, ma, 0, true).then(function () { taiLaiIm(); }).catch(function (e) { nutXong(btn); bao(e.message); });
+}
+function taiLaiIm() { goi('tongQuan', TOI.ma, PIN).then(function (d) { TQ = d; veChu(); }).catch(function (e) { bao(e.message); }); }
+
+/* --- Duyệt --- */
+function veDuyet() {
+  var h = '<div class="the"><h2>Chờ anh duyệt (' + TQ.choDuyet.length + ')</h2>';
+  if (!TQ.choDuyet.length) h += '<p class="phu">Không còn khoản nào chờ duyệt 👍</p>';
+  TQ.choDuyet.forEach(function (p) {
+    h += '<div class="dong" id="d_' + p.ma + '"><div class="tren"><div class="nd"><span class="' + (p.loai === 'THU' ? 'thu' : 'chi') + '">' + (p.loai === 'THU' ? 'THU' : 'CHI') + '</span> · ' + esc(p.nd) + '</div><div class="tien ' + (p.loai === 'THU' ? 'thu' : 'chi') + '">' + tien(p.tien) + '</div></div>' +
+      '<div class="duoi">' + ngayNgan(p.ngay) + ' · ' + esc(p.cs) + ' · ' + esc(p.tenNv) + ' · ' + esc(p.ht.toLowerCase()) + (p.tkNhan ? ' → ' + esc(p.tkNhan) : '') + (p.nhom ? ' · ' + esc(p.nhom) : '') + (p.nguoi ? ' · ' + esc(p.nguoi) : '') + '</div>';
+    if (p.ds) h += '<div class="ghi-xanh">' + esc(p.ds) + '</div>';
+    if (p.cb) h += '<div class="ghi-do">⚠ ' + p.cb.split(' | ').map(esc).join('<br>⚠ ') + '</div>';
+    if (p.gTrinh) h += '<div class="ghi-xanh">NV giải trình: ' + esc(p.gTrinh) + '</div>';
+    if (p.anh) h += '<div class="duoi"><a href="' + esc(p.anh) + '" target="_blank">📎 Xem ảnh chứng từ</a></div>';
+    h += '<div class="nut-hang"><button class="nho b-xl" onclick="duyet(\'' + p.ma + '\',\'duyet\', this)">✔ Duyệt' + (p.loai === 'THU' && p.ht === 'TIỀN MẶT' ? ' đủ' : '') + '</button>' +
+      '<button class="nho b-cam" onclick="duyet(\'' + p.ma + '\',\'kiemtra\', this)">⚠ NV kiểm tra lại</button><button class="nho b-phu" onclick="duyet(\'' + p.ma + '\',\'tuchoi\', this)">✖ Từ chối</button></div></div>';
+  });
+  h += '</div>';
+  if (TQ.kiemTra.length) {
+    h += '<div class="the"><h3>Đang chờ nhân viên kiểm tra (' + TQ.kiemTra.length + ')</h3>';
+    TQ.kiemTra.forEach(function (p) { h += '<div class="dong"><div class="tren"><div class="nd">' + esc(p.tenNv) + ': ' + esc(p.nd) + '</div><div class="tien">' + tien(p.tien) + '</div></div><div class="duoi">' + ngayNgan(p.ngay) + ' · ' + esc(p.ds || p.gcChu || '') + '</div></div>'; });
+    h += '</div>';
+  }
+  $('man').innerHTML = h;
+}
+function duyet(ma, hd, btn) {
+  var gc = '';
+  if (hd === 'kiemtra') { gc = prompt('Nhân viên cần kiểm tra điều gì? (vd: tiền chưa về, gửi ảnh hoá đơn, sai số tiền)'); if (!gc) return; }
+  if (hd === 'tuchoi') { gc = prompt('Lý do từ chối (không bắt buộc)') || ''; }
+  nutBan(btn, '…');
+  goi('duyetPhieu', TOI.ma, PIN, ma, hd, gc).then(function () {
+    TQ.choDuyet = TQ.choDuyet.filter(function (p) { return p.ma !== ma; });
+    var el = $('d_' + ma); if (el) el.remove();
+    veTab(); bao(hd === 'duyet' ? 'Đã duyệt' : hd === 'kiemtra' ? 'Đã báo nhân viên kiểm tra' : 'Đã từ chối');
+  }).catch(function (e) { nutXong(btn); bao(e.message); });
+}
+
+/* --- Đối soát --- */
+function veDoiSoat() {
+  var h = '<div class="the"><h2>Đối soát 7 ngày</h2><p class="phu">So 3 nguồn: nhân viên báo · Nhanh.vn · tiền thật về ngân hàng. Tiền mặt: anh đếm rồi bấm "Duyệt đủ" hoặc nhập số đếm được.</p></div>';
+  TQ.doiSoat.forEach(function (ds) {
+    var coSo = ds.coSo.filter(function (o) { return o.nhanhTong || o.nvThuTm || o.nvThuCk || o.nvChiTm || o.soHd; });
+    var nh = ds.nganHang;
+    if (!coSo.length && !nh.vao) return;
+    h += '<div class="the"><h3>' + ngayVN(ds.ngay) + (ds.ngay === TQ.ngay ? ' (hôm nay)' : '') + '</h3>';
+    coSo.forEach(function (o) {
+      var lechTm = o.lechTm, lechCk = o.lechCk;
+      h += '<b>' + o.cs + '</b> · ' + o.soHd + ' hoá đơn · doanh thu ' + gon(o.nhanhTong) + '<table class="bang">' +
+        '<tr><td>Tiền mặt — Nhanh.vn / NV báo</td><td>' + gon(o.nhanhTm) + ' / ' + gon(o.nvThuTm) + ' ' + (lechTm ? '<span class="lech">lệch ' + gon(lechTm) + '</span>' : '<span class="khop">✓</span>') + '</td></tr>' +
+        '<tr><td>NV chi tiền mặt</td><td>' + gon(o.nvChiTm) + '</td></tr>' +
+        (o.phaiNop >= 0 ? '<tr><td><b>Tiền mặt phải nộp anh</b></td><td><b>' + tien(o.phaiNop) + '</b></td></tr>'
+          : '<tr><td><b>NV đang ứng tiền túi</b> (chi nhiều hơn thu)</td><td class="lech">' + tien(-o.phaiNop) + '</td></tr>') +
+        '<tr><td>Chuyển khoản — Nhanh.vn / NV báo</td><td>' + gon(o.nhanhCk) + ' / ' + gon(o.nvThuCk) + ' ' + (lechCk ? '<span class="lech">lệch ' + gon(lechCk) + '</span>' : '<span class="khop">✓</span>') + '</td></tr>' +
+        (o.nhanhNo ? '<tr><td>Khách còn nợ (Nhanh.vn)</td><td class="lech">' + gon(o.nhanhNo) + '</td></tr>' : '') +
+        (o.nhanhThe ? '<tr><td>Quẹt thẻ</td><td>' + gon(o.nhanhThe) + '</td></tr>' : '') + '</table>';
+      if (o.dem != null) h += '<div class="' + (o.lechDem ? 'ghi-do' : 'tot') + '">Anh đã đếm ' + tien(o.dem) + ' — ' + esc(o.demTt) + (o.lechDem ? ' ' + tien(o.lechDem) : '') + '</div>';
+      if (o.phaiNop > 0 || o.dem != null) h += '<div class="nut-hang"><button class="nho b-xl" onclick="demTien(\'' + ds.ngay + '\',\'' + o.cs + '\',\'du\', this)">✔ Duyệt đủ ' + gon(o.phaiNop) + '</button>' +
+        '<button class="nho b-cam" onclick="demTien(\'' + ds.ngay + '\',\'' + o.cs + '\',\'nhap\', this)">Nhập số đếm được</button></div>';
+      h += '<div style="height:12px"></div>';
+    });
+    if (TQ.nganHang) {
+      h += '<b>Ngân hàng (3 tài khoản nhận)</b><table class="bang"><tr><td>Tiền vào thật / Nhanh.vn chuyển khoản</td><td>' + gon(nh.vao) + ' / ' + gon(nh.nhanhCk) + ' ' +
+        (nh.lech ? '<span class="lech">lệch ' + gon(nh.lech) + '</span>' : '<span class="khop">✓</span>') + '</td></tr>' +
+        (nh.khongDoanhThu ? '<tr><td>Không phải doanh thu (đã đánh dấu)</td><td>' + gon(nh.khongDoanhThu) + '</td></tr>' : '') + '</table>';
+      if (nh.chuaGhep.length) {
+        h += '<div class="ghi-do"><b>Tiền vào chưa ai báo (' + nh.chuaGhep.length + ')</b></div>';
+        nh.chuaGhep.forEach(function (g) {
+          h += '<div class="dong"><div class="tren"><div class="nd">' + esc(g.gio) + ' · ' + esc(g.tk) + '</div><div class="tien thu">' + tien(g.tien) + '</div></div><div class="duoi">' + esc(g.nd) + '</div>' +
+            '<div class="nut-hang"><button class="nho b-phu" onclick="nhanNh(\'' + g.id + '\', this)">Không phải doanh thu</button></div></div>';
+        });
+      }
+    }
+    h += '</div>';
+  });
+  $('man').innerHTML = h;
+}
+function demTien(ngay, cs, kieu, btn) {
+  var giaTri = 'du', gc = '';
+  if (kieu === 'nhap') { var s = prompt('Anh đếm được bao nhiêu tiền mặt của ' + cs + ' ngày ' + ngayNgan(ngay) + '?'); if (s === null) return; giaTri = so(s); gc = prompt('Ghi chú (không bắt buộc)') || ''; }
+  nutBan(btn, '…');
+  goi('demTienMat', TOI.ma, PIN, ngay, cs, giaTri, gc).then(function (kq) {
+    bao(kq.lech ? (kq.tt + ' ' + tien(Math.abs(kq.lech)) + ' — đã báo đỏ cho nhân viên') : 'Đã duyệt đủ tiền mặt'); taiLaiIm();
+  }).catch(function (e) { nutXong(btn); bao(e.message); });
+}
+function nhanNh(id, btn) {
+  var s = prompt('Khoản này là gì? (vd: tiền nhà gửi, hoàn tiền NCC, chuyển nội bộ)', 'Không phải doanh thu');
+  if (s === null) return;
+  if (!/doanh thu/i.test(s)) s = 'Không phải doanh thu: ' + s;
+  nutBan(btn, '…');
+  goi('ganNhanNganHang', TOI.ma, PIN, id, s).then(function () { taiLaiIm(); }).catch(function (e) { nutXong(btn); bao(e.message); });
+}
+
+/* --- Tra cứu --- */
+function veTraCuu() {
+  $('man').innerHTML = '<div class="the"><h2>Tra cứu thu chi</h2><p class="phu">Gõ vài chữ, không cần dấu: "may say", "ship op pin", "xe vn 11/2026", "lan phuong"… Tìm trong toàn bộ sổ chi đã nạp.</p>' +
+    '<input id="tcO" placeholder="Tìm gì?" autocomplete="off"><div class="chon" style="margin-top:10px" id="tcLoai"><button data-v="CHI" class="bat">Khoản chi</button><button data-v="THU">Khoản thu</button><button data-v="">Tất cả</button></div>' +
+    '<button id="tcNut" class="rong">Tìm</button></div><div id="tcKq"></div>';
+  var loai = 'CHI';
+  document.querySelectorAll('#tcLoai button').forEach(function (b) { b.onclick = function () { loai = b.dataset.v; document.querySelectorAll('#tcLoai button').forEach(function (x) { x.classList.toggle('bat', x === b); }); tim(); }; });
+  var tim = function () {
+    var q = $('tcO').value.trim(); if (!q) return;
+    $('tcKq').innerHTML = '<div class="cho-tai">Đang tìm…</div>';
+    goi('timChi', TOI.ma, PIN, q, loai).then(function (kq) {
+      var h = '<div class="the"><h3>' + kq.soKhoan + ' khoản · cộng ' + tien(kq.tong) + '</h3>';
+      kq.ds.forEach(function (p) {
+        h += '<div class="dong"><div class="tren"><div class="nd">' + esc(p.nd) + '</div><div class="tien ' + (p.loai === 'THU' ? 'thu' : 'chi') + '">' + tien(p.tien) + '</div></div>' +
+          '<div class="duoi"><b>' + ngayVN(p.ngay) + '</b> · ' + esc(p.cs) + ' · ' + esc(p.tenNv) + (p.nguoi ? ' · ' + esc(p.nguoi) : '') + ' · ' + esc(p.nhom) + ' · ' + chip(p.tt) + (p.nguon && p.nguon !== 'App' ? ' · ' + esc(p.nguon) : '') +
+          (p.anh ? ' · <a href="' + esc(p.anh) + '" target="_blank">📎 ảnh</a>' : '') + '</div></div>';
+      });
+      if (kq.soKhoan > kq.ds.length) h += '<p class="phu">Chỉ hiện ' + kq.ds.length + ' khoản mới nhất — gõ thêm chữ để lọc.</p>';
+      $('tcKq').innerHTML = h + '</div>';
+    }).catch(function (e) { $('tcKq').innerHTML = '<div class="loi">' + esc(e.message) + '</div>'; });
+  };
+  $('tcNut').onclick = tim;
+  $('tcO').onkeydown = function (e) { if (e.key === 'Enter') tim(); };
+  $('tcO').focus();
+}
+
+/* --- Nợ & quỹ --- */
+function veQuy() {
+  var h = '<div class="the"><h2>Nợ vay & quỹ dự phòng</h2><p class="phu">Số dư = số anh nhập gần nhất + tiền anh xác nhận đã chuyển − kỳ nợ ngân hàng đã trừ. Thỉnh thoảng anh nhìn app ngân hàng và bấm "Cập nhật số dư" cho chính xác.</p></div>';
+  TQ.taiKhoan.forEach(function (t) {
+    h += '<div class="the"><h3>' + esc(t.ten) + '</h3><div class="mo-nhe"><span class="stk" onclick="chep(\'' + esc(t.stk) + '\')">' + esc(t.nganHang + ' ' + t.stk) + ' ⧉</span></div>';
+    h += '<table class="bang"><tr><td>Số dư ước tính' + (t.coSoDu ? ' (nhập ' + ngayNgan(t.nhapLuc) + ')' : ' <span class="lech">— chưa nhập</span>') + '</td><td>' + tien(t.soDu) + '</td></tr>';
+    if (t.loai === 'TRẢ GÓP' || t.loai === 'TRẢ LÃI') {
+      h += '<tr><td>Kỳ tới ' + ngayVN(t.han) + '</td><td>' + tien(t.tienKy) + '</td></tr><tr><td>Dư nợ đang tính lãi</td><td>' + tien(t.duNo) + ' · ' + t.laiSuat + '%/năm</td></tr>' +
+        '<tr><td>Còn thiếu cho kỳ tới</td><td class="' + (t.can ? 'lech' : 'khop') + '">' + (t.can ? tien(t.can) : 'Đủ ✓') + '</td></tr>';
+    } else if (t.loai === 'QUỸ') {
+      var pt = t.mucTieu ? Math.min(100, Math.round(t.soDu / t.mucTieu * 100)) : 0;
+      h += '<tr><td>Mục tiêu trước ' + ngayVN(t.han) + '</td><td>' + tien(t.mucTieu) + '</td></tr>' +
+        '<tr><td>Tháng này cần góp / đã góp</td><td>' + gon(t.quotaThang || 0) + ' / ' + gon(t.gopThangNay || 0) + '</td></tr></table><div class="thanh"><i style="width:' + pt + '%"></i></div><div class="mo-nhe">' + pt + '% mục tiêu</div><table class="bang">';
+    } else if (t.loai === 'CHƯA GIẢI NGÂN') {
+      h += '<tr><td>Dự kiến vay</td><td>' + tien(t.duNo) + ' · ' + t.laiSuat + '%/năm</td></tr><tr><td>Lãi dự kiến/tháng</td><td>~' + gon(t.duNo * t.laiSuat / 100 / 12) + '</td></tr>';
+    }
+    h += '</table>';
+    if (t.chiTiet) h += '<p class="phu" style="margin-top:8px">' + esc(t.chiTiet) + '</p>';
+    if (t.loai !== 'CÁ NHÂN' && t.loai !== 'CHƯA GIẢI NGÂN') h += '<div class="nut-hang"><button class="nho b-phu" onclick="nhapSoDu(\'' + t.ma + '\', this)">Cập nhật số dư</button><button class="nho b-phu" onclick="chuyenThem(\'' + t.ma + '\', this)">Ghi chuyển thêm</button></div>';
+    h += '</div>';
+  });
+  $('man').innerHTML = h;
+}
+function nhapSoDu(ma, btn) {
+  var s = prompt('Số dư hiện tại trên app ngân hàng của tài khoản này là bao nhiêu?'); if (s === null || s === '') return;
+  nutBan(btn, '…');
+  goi('capNhatSoDu', TOI.ma, PIN, ma, so(s)).then(function () { bao('Đã lưu số dư'); taiLaiIm(); }).catch(function (e) { nutXong(btn); bao(e.message); });
+}
+function chuyenThem(ma, btn) {
+  var s = prompt('Anh vừa chuyển thêm bao nhiêu vào tài khoản này (ngoài đề xuất)?'); if (!s) return;
+  nutBan(btn, '…');
+  goi('chuyenThem', TOI.ma, PIN, ma, so(s)).then(function () { bao('Đã ghi nhận'); taiLaiIm(); }).catch(function (e) { nutXong(btn); bao(e.message); });
+}
+
+/* --- Anh tự ghi --- */
+function veGhi() {
+  $('man').innerHTML = '<p class="phu">Anh ghi thay khi nhân viên nghỉ. Khoản anh ghi được duyệt luôn.</p>' + formPhieu('CHI');
+  ganForm(function () { taiLaiIm(); });
+}
+
+document.addEventListener('visibilitychange', function () { if (!document.hidden && TOI && TOI.chu && TQ) taiLaiIm(); });
+moDau();
+</script>
+</body>
+</html>
