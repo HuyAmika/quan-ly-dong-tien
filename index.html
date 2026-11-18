@@ -425,6 +425,10 @@ function veDoiSoat() {
         '<button class="nho b-cam" onclick="demTien(\'' + ds.ngay + '\',\'' + o.cs + '\',\'nhap\', this)">Nhập số đếm được</button></div>';
       h += '<div style="height:12px"></div>';
     });
+    var ckTk = nh.ckTheoTk || {};
+    if (Object.keys(ckTk).length) {
+      h += '<b>Chuyển khoản theo tài khoản (Nhanh.vn)</b><table class="bang">' + Object.keys(ckTk).map(function (k) { return '<tr><td>' + esc(k) + '</td><td>' + tien(ckTk[k]) + '</td></tr>'; }).join('') + '</table><div style="height:10px"></div>';
+    }
     if (TQ.nganHang) {
       h += '<b>Ngân hàng (3 tài khoản nhận)</b><table class="bang"><tr><td>Tiền vào thật / Nhanh.vn chuyển khoản</td><td>' + gon(nh.vao) + ' / ' + gon(nh.nhanhCk) + ' ' +
         (nh.lech ? '<span class="lech">lệch ' + gon(nh.lech) + '</span>' : '<span class="khop">✓</span>') + '</td></tr>' +
